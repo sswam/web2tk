@@ -66,13 +66,13 @@ Popular front-end web frameworks do not separate these elements sufficiently, so
 - We can embed components into a page using an include function.
 - We implement repeated and optional components by binding a single component in a template to a list in the page data.
   - In the data structure, null is equivalent to [], and "foo" is equivalent to ["foo"].
-- HTML is connected to data using the data-field attribute.
+- HTML is connected to data using the data-field or d attribute.
 
 - In the case that we want to show a message when a datum "foo" is empty or missing, we can use the data-field="foo!", i.e. append "!" to the field name.
 - When a component with a data-field="bar" is nested inside a container with data-field="foo", the full field name is "foo.bar".
 - To access an absolute field name, prefix it with ".", for example data-field=".user.name"
 - When a component with data-field `foo` is repeated 3 times, for example, the final field names are "foo.0", "foo.1" and "foo.2".
-- When a component is hidden because it is bound to an empty list or null, it is marked with class "null", rather than being entirely removed from the document. This enables to repopulate the component if the data changes. Alternatively, perhaps use data-null="true".
+- When a component is hidden because it is bound to an empty list or null, it is marked with class "null", rather than being entirely removed from the document. That class will set CSS `display: none`. This enables to repopulate the component if the data changes.
 - Where data "foo" is to be substituted into other text, use `<span data-field="foo">` or similar.
 - Data is plain-text by default.
   - HTML data could be processed into DOM nodes before presentation to distinguish it from text data
@@ -80,3 +80,7 @@ Popular front-end web frameworks do not separate these elements sufficiently, so
 - To bind `<a data-field="link" href="...">` or `<img data-field="image" src="...">` to data, we can have `link.href` and `foo.src` in the data. This would work similarly for any attribute.
 - We can bind data to form fields with just `<form data-field=".">` or `<form data-field="user.settings">` etc., and it will bind data to each named form field e.g. `<input name="fullname">` would be bound to data `user.settings.fullname`.
 - the [attribute^="value"] selector can be used to select elements with the specified attribute, whose value starts with the specified value.
+- In some cases we need to format data before display, such as dates, numbers, and amounts of money. We can use the data-format or f attribute, with the name of a format. The format name is used to look up a formatting function.
+- For editable data, the specified format name is also used to look up a parsing function.
+- For dynamic messages, the data might be { "template": "There are <span d='items' f='.cardinal'>12</span> <span d='.plurals.ITEM' d2='items' f='.plural'>items</span>.", "items": 12 }.
+  - This still isn't quite right. Need to be able to bind a message to any set of data by name. Could use like data-field-items=".items" or d-items=".items"?
