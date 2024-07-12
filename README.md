@@ -58,6 +58,7 @@ Popular front-end web frameworks do not separate these elements sufficiently, so
 - Input validation should be unified across front-end and back-end, with no duplication of effort.
 - Pages can be rendered on front-end or back-end using the same rendering code.
 - It should not be necessary to alter data-structures from the back-end to suit the front-end.
+- Avoid databases and use plain-text files as much as possible, indexed if needed.
 
 ### Solution
 
@@ -84,3 +85,35 @@ Popular front-end web frameworks do not separate these elements sufficiently, so
 - For editable data, the specified format name is also used to look up a parsing function.
 - For dynamic messages, the data might be { "template": "There are <span d='items' f='.cardinal'>12</span> <span d='.plurals.ITEM' d2='items' f='.plural'>items</span>.", "items": 12 }.
   - This still isn't quite right. Need to be able to bind a message to any set of data by name. Could use like data-field-items=".items" or d-items=".items"?
+
+## Recommended Back-end
+
+### Data Storage
+
+- The recommended data storage method is inspired by [http://www.strozzi.it/cgi-bin/CSA/tw7/I/en_US/NoSQL/Home%20Page](NoSQL: a non-SQL RDBMS).
+- Store content and data in append-only plain-text files as much as possible.
+- For editable content, append new copies of entire records to the data files. 
+- Data files can be compacted later, to remove or archive old copies of records.
+- Recommended file formats `key: value` records (similar to apt/dpkg records), and TSV.
+- JSONL (JSON Lines) and quasi-XML or HTML without a root element are other possible file formats.
+- Records may include standard fields such as record ID, revision ID, timestamp, user, client ID, server ID.
+- If users and timestamps and included with updates, we can sort the updates consistently across a distributed system.
+
+### Conflicts
+
+- We could include a previous revision ID with updates, that would enable to detect conflicts.
+- We can automatically resolve record conflicts where different fields in a record are changed concurrently.
+- Field conflicts occur when a single field is changed by multiple users concurrently.
+- We don't automatically resolve field conflicts.
+- Instead, we give the field a set value, which can be displayed to the user and marked as a conflict.
+- The user can manually resolve such conflicts.
+- An alternative would be to reject field conflicts, and flag the conflict.
+- Another alternative would be to go with the most recent change, and flag the conflict.
+
+## Ideas for Sample Applications
+
+- calendar
+- planner / kanban
+- flashcards study
+- AI chat
+- shopping: books, movies, games
