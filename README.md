@@ -64,7 +64,7 @@ Popular front-end web frameworks do not separate these elements sufficiently, so
 
 - HTML template pages and components use only standard HTML features with no extra syntax.
 - HTML template pages and components include placeholder data, and look similar to rendered pages and components.
-- We can embed components into a page using an include function.
+- We can embed components into a page using an include function, with a data-src or s attribute.
 - We implement repeated and optional components by binding a single component in a template to a list in the page data.
   - In the data structure, null is equivalent to [], and "foo" is equivalent to ["foo"].
 - HTML is connected to data using the data-field or d attribute.
@@ -81,6 +81,9 @@ Popular front-end web frameworks do not separate these elements sufficiently, so
 - To bind `<a data-field="link" href="...">` or `<img data-field="image" src="...">` to data, we can have `link.href` and `foo.src` in the data. This would work similarly for any attribute.
 - We can bind data to form fields with just `<form data-field=".">` or `<form data-field="user.settings">` etc., and it will bind data to each named form field e.g. `<input name="fullname">` would be bound to data `user.settings.fullname`.
 - the [attribute^="value"] selector can be used to select elements with the specified attribute, whose value starts with the specified value.
+- For more realistic data in templates, different features can be spread out across several elements in a list.
+- Alternatives such as different types of form fields can be implemented with distinct data keys such as `rows.0.text`, `rows.1.image`.
+
 - In some cases we need to format data before display, such as dates, numbers, and amounts of money. We can use the data-format or f attribute, with the name of a format. The format name is used to look up a formatting function.
 - For editable data, the specified format name is also used to look up a parsing function.
 - For dynamic messages, the data might be { "template": "There are <span d='items' f='.cardinal'>12</span> <span d='.plurals.ITEM' d2='items' f='.plural'>items</span>.", "items": 12 }.
@@ -90,7 +93,7 @@ Popular front-end web frameworks do not separate these elements sufficiently, so
 
 ### Data Storage
 
-- The recommended data storage method is inspired by [http://www.strozzi.it/cgi-bin/CSA/tw7/I/en_US/NoSQL/Home%20Page](NoSQL: a non-SQL RDBMS).
+- The recommended data storage method is inspired by [NoSQL: a non-SQL RDBMS](http://www.strozzi.it/cgi-bin/CSA/tw7/I/en_US/NoSQL/Home%20Page).
 - Store content and data in append-only plain-text files as much as possible.
 - For editable content, append new copies of entire records to the data files. 
 - Data files can be compacted later, to remove or archive old copies of records.
@@ -110,10 +113,26 @@ Popular front-end web frameworks do not separate these elements sufficiently, so
 - An alternative would be to reject field conflicts, and flag the conflict.
 - Another alternative would be to go with the most recent change, and flag the conflict.
 
-## Ideas for Sample Applications
+## Ideas for Applications
 
+- simple form
+- generic form
+- simple to-do list
 - calendar
 - planner / kanban
 - flashcards study
 - AI chat
 - shopping: books, movies, games
+- portal for care workers to find work
+- language study
+- blog
+
+## Issues
+
+- When browsing between different similar pages, it's good if the browser doesn't clear and reload the page, we want to avoid that flash.
+  - The browser might do this by itself, if the page loads quickly.
+  - We could also replace part of the page by changing a container's source and reloading it.
+  - I don't want to use a Virtual DOM.
+
+- When data changes, we need to update all connected elements in the DOM.
+- When data in the DOM changes, e.g. in a form input, we need to update the corresponding data in the data structure.
