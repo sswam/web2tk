@@ -1,0 +1,24 @@
+2024-07-18 Thu
+	- form demo
+		- implement a simple form to show, edit and submit user info
+		- variety of field types
+			- text
+			- textarea
+			- date
+			- select
+				- select with "Other" option -> text
+			- checkboxes
+			- radio buttons
+			- sliders
+		- name, email, phone, date of birth, gender, about
+		- HTML form, with table
+		- CSS
+		- JSON
+
+TODO
+
+
+		- fetch JSON data
+		- fill form with data
+		- extract data from form
+		- submit data to server

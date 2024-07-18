@@ -1,0 +1,11 @@
+form.user td {
+	padding: 4px;
+}
+form.user th {
+	text-align: right;
+	vertical-align: top;
+	padding-top: 7px;
+}
+form.user td * {
+	min-width: 15em;
+}
