@@ -89,6 +89,23 @@ Popular front-end web frameworks do not separate these elements sufficiently, so
 - For dynamic messages, the data might be { "template": "There are <span d='items' f='.cardinal'>12</span> <span d='.plurals.ITEM' d2='items' f='.plural'>items</span>.", "items": 12 }.
   - This still isn't quite right. Need to be able to bind a message to any set of data by name. Could use like data-field-items=".items" or d-items=".items"?
 
+- A template may have a list of several items, with some difference in content structure.
+  - The items in a list must be adacent sibling elements, and each have the same data-field or d attribute value.
+    - An alternative would be to assume any adjacent siblings having the same tag name, where one has a data-field or d attribute, are items in a list.
+  - We would like to merge the items into a single template item.
+    - I'm not sure how to do this automatically, unfortunately.
+    - Any dynamic part of the template items, that isn't present in all of them, must contain a data-field or d attribute.
+    - We can merge the parts based on the order that these d values appear, or if the order is not clear, append that part at the end.
+    - I'm still not clear on exactly how to do this, could try it and see what happens.
+
+    - ideas:
+      - Start with a copy ITEM of the first item.
+      - Remove placeholder text.
+        - How can we remove placeholder attribute values? We won't know which attribute values are fixed, and which are variable.
+      - For each data-field or d attribute in ITEM:
+        - search for this data-field in the next item
+        - If present
+
 ## Recommended Back-end
 
 ### Data Storage
@@ -126,6 +143,8 @@ Popular front-end web frameworks do not separate these elements sufficiently, so
 - portal for care workers to find work
 - language study
 - blog
+
+- *use Test Driven Development to develop web2tk*
 
 ## Issues
 
