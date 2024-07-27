@@ -1,0 +1,135 @@
+Sure! Below, I'll split the provided code into reusable ESM modules, and create wrapper scripts for both Deno and Node environments. This will allow you to keep the main logic in a reusable format while providing environment-specific entry points.
+
+### 1. ESM Module (`processHTML.js`)
+
+This module will contain the `process` function.
+
+```javascript
+// processHTML.js
+
+// Replace elements' innerHTML with corresponding JSON value based on 'd' attribute
+export function process(doc, data) {
+	// Get all elements with the 'd' attribute
+	const elementsWithD = doc.querySelectorAll("[d]");
+
+	// Iterate over the elements and replace the innerHTML with the corresponding JSON value
+	for (const element of elementsWithD) {
+		const key = element.getAttribute("d");
+		if (key && data.hasOwnProperty(key)) {
+			element.textContent = data[key];
+		}
+	}
+}
+```
+
+### 2. Server Module (`server.js`)
+
+This module should work in both Node.js and Deno environments.
+
+```javascript
+// server.js
+
+import { parseHTML } from 'linkedom';
+import { process } from './processHTML.js';
+
+// File system functions that work for both Node and Deno
+const isNode = typeof process !== 'undefined' && process.release && process.release.name === 'node';
+
+export async function readTextFile(filePath) {
+	if (isNode) {
+		const fs = await import('fs/promises');
+		return await fs.readFile(filePath, 'utf8');
+	} else {
+		const { readTextFile } = await import('deno').then((mod) => mod.Deno);
+		return await readTextFile(filePath);
+	}
+}
+
+export async function writeTextFile(filePath, data) {
+	if (isNode) {
+		const fs = await import('fs/promises');
+		return await fs.writeFile(filePath, data, 'utf8');
+	} else {
+		const { writeTextFile } = await import('deno').then((mod) => mod.Deno);
+		return await writeTextFile(filePath, data);
+	}
+}
+
+export async function processFiles(inputFile, dataFile, outputFile) {
+	// Read JSON data
+	const jsonData = await readTextFile(dataFile);
+	const data = JSON.parse(jsonData);
+
+	// Read input.html
+	const inputHtml = await readTextFile(inputFile);
+
+	// Parse the input HTML into a DOM representation
+	const { document: doc } = parseHTML(inputHtml);
+
+	if (!doc) {
+		throw new Error("Failed to parse the HTML.");
+	}
+
+	// Process the DOM by adding data.
+	process(doc, data);
+
+	// Serialize the modified DOM back to HTML
+	const updatedHtml = doc.toString();
+
+	// Write the updated HTML to output.html
+	await writeTextFile(outputFile, updatedHtml);
+}
+```
+
+### 3. Deno Wrapper Script (`denoWrap.js`)
+
+This script is a Deno-specific entry point.
+
+```javascript
+#!/usr/bin/env -S deno run --allow-read --allow-write
+
+import { processFiles } from './server.js';
+
+async function main(args) {
+	const [input = "input.html", data = "data.json", output = "output.html"] = args;
+	await processFiles(input, data, output);
+}
+
+if (import.meta.main) {
+	await main(Deno.args);
+}
+```
+
+### 4. Node.js Wrapper Script (`nodeWrap.js`)
+
+This script is a Node.js-specific entry point.
+
+```javascript
+#!/usr/bin/env node
+
+import { processFiles } from './server.js';
+
+async function main(args) {
+	const [input = "input.html", data = "data.json", output = "output.html"] = args.slice(2);
+	await processFiles(input, data, output);
+}
+
+if (require.main === module) {
+	main(process.argv);
+}
+```
+
+### Usage Instructions
+
+1. **Run with Node.js:**
+    - Ensure you have the required dependencies installed (`linkedom` for HTML parsing)
+    - Make the `nodeWrap.js` script executable: `chmod +x nodeWrap.js`
+    - Execute it: `./nodeWrap.js input.html data.json output.html`
+
+2. **Run with Deno:**
+    - Ensure you have Deno installed
+    - Make the `denoWrap.js` script executable: `chmod +x denoWrap.js`
+    - Execute it: `./denoWrap.js input.html data.json output.html`
+
+These modularized components help ensure that your `process` function is reusable across different environments while maintaining environment-specific execution logic.
+
