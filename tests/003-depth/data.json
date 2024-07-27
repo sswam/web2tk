@@ -1,0 +1,8 @@
+{
+	"greeting": "Hey, how are you doing?",
+	"farewell": "Farewell, friends.",
+	"user": {
+		"name":"Frodo Baggins",
+		"address": "Bag End, Hobbiton, the Shire"
+	}
+}
