@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>File Processor</title>
+	<link rel="icon" href="data:," />
+</head>
+<body>
+	<button id="select-directory">Select Working Directory</button>
+	<button id="process-files">Process Files</button>
+
+	<script type="module">
+		import * as env from './webapi/env.js';
+		import { setEnv } from './env.js';
+		import * as server from './server.js';
+
+		setEnv(env);
+
+		document.getElementById('select-directory').addEventListener('click', async () => {
+			await env.requestWorkDir();
+		});
+
+		document.getElementById('process-files').addEventListener('click', async () => {
+			try {
+				await server.processFiles('input.html', 'data.json', 'output.html');
+				alert("Files processed successfully.");
+			} catch (error) {
+				console.error("Error processing files:", error);
+				alert("Error processing files: " + error);
+			}
+		});
+	</script>
+</body>
+</html>
