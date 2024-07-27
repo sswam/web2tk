@@ -12,7 +12,7 @@ export async function processFiles(inputFile, dataFile, outputFile) {
 	const jsonData = await readTextFile(dataFile);
 	const data = JSON.parse(jsonData);
 
-	// Read input.html
+	// Read input html
 	const inputHtml = await readTextFile(inputFile);
 
 	// Parse the input HTML into a DOM representation
@@ -28,6 +28,6 @@ export async function processFiles(inputFile, dataFile, outputFile) {
 	// Serialize the modified DOM back to HTML
 	const updatedHtml = doc.toString();
 
-	// Write the updated HTML to output.html
+	// Output the updated HTML
 	await writeTextFile(outputFile, updatedHtml);
 }
