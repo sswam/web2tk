@@ -1,4 +1,10 @@
-import { main } from './server.js';
-import { args } from './env.js';
+import { args } from './node/env.js';
+import * as server from './server.js';
 
-main();
+// The main function, when run from the command-line
+export async function main() {
+	const [input = "input.html", data = "data.json", output = "output.html"] = args;
+	await server.processFiles(input, data, output);
+}
+
+await main();

@@ -1,6 +1,7 @@
-import { parseHTML, readTextFile, writeTextFile, args } from './env.js';
-import { process } from './web2tk.js';
+import { parseHTML, readTextFile, writeTextFile, args } from './node/env.js';
+import * as web2tk from './web2tk.js';
 
+// Load input files, parse the DOM, process with web2tk, and write to an output file
 export async function processFiles(inputFile, dataFile, outputFile) {
 	// Read JSON data
 	const jsonData = await readTextFile(dataFile);
@@ -16,21 +17,12 @@ export async function processFiles(inputFile, dataFile, outputFile) {
 		throw new Error("Failed to parse the HTML.");
 	}
 
-	// Process the DOM by adding data.
-	process(doc, data);
+	// Process the DOM by adding data
+	web2tk.process(doc, data);
 
 	// Serialize the modified DOM back to HTML
 	const updatedHtml = doc.toString();
 
 	// Write the updated HTML to output.html
 	await writeTextFile(outputFile, updatedHtml);
-}
-
-export async function main() {
-	const [input = "input.html", data = "data.json", output = "output.html"] = args;
-	await processFiles(input, data, output);
-}
-
-if (typeof Deno !== 'undefined' && import.meta.main || typeof process !== 'undefined' && process?.versions?.node) {
-	main();
 }

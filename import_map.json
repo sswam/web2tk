@@ -1,0 +1,5 @@
+{
+	"imports": {
+		"./node/env.js": "./deno/env.js"
+	}
+}
