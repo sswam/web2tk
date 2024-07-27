@@ -1,8 +1,18 @@
+import path from 'path';
 import { parseHTML } from 'linkedom';
 import { promises as fs } from 'fs';
 
-function formatHTML(doc) {
-	return doc.toString();
+const args = process.argv.slice(2);
+
+const exit = process.exit;
+
+async function readDir(dir) {
+	const dirEntries = await fs.readdir(dir, { withFileTypes: true });
+	for (const dirEntry of dirEntries) {
+		dirEntry.isDirectoryFn = dirEntry.isDirectory;
+		Object.defineProperty(dirEntry, 'isDirectory', { get: dirEntry.isDirectoryFn });
+	}
+	return dirEntries;
 }
 
 async function readTextFile(filePath) {
@@ -13,6 +23,8 @@ async function writeTextFile(filePath, data) {
 	return await fs.writeFile(filePath, data, 'utf8');
 }
 
-const args = process.argv.slice(2);
+function formatHTML(doc) {
+	return doc.toString();
+}
 
-export { parseHTML, formatHTML, readTextFile, writeTextFile, args };
+export { args, exit, readDir, path, readTextFile, writeTextFile, parseHTML, formatHTML };

@@ -1,9 +1,9 @@
-# Run the code with Deno, measure the time taken
+# Run the tests with Deno, measure the time taken
 deno:
-	time deno run --import-map=import_map.json --allow-read --allow-write ./main.js tests/002-fragment/input.html tests/002-fragment/data.json out.html
+	time deno run --import-map=import_map.json --allow-read --allow-write ./test.js
 
-# Run the code with Node.js, measure the time taken
+# Run the tests with Node.js, measure the time taken
 node:
-	time node ./main.js tests/002-fragment/input.html tests/002-fragment/data.json out.html
+	time node ./test.js
 
 .PHONY: deno node
