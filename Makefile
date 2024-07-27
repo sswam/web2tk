@@ -6,4 +6,7 @@ deno:
 node:
 	time node ./test.js
 
+clean:
+	rm -f tests/*/output.html
+
 .PHONY: deno node
