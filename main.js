@@ -1,4 +1,5 @@
-import { args } from './node/env.js';
+import * as env from './node/env.js';
+import { setEnv } from './env.js';
 import * as server from './server.js';
 
 /**
@@ -6,7 +7,8 @@ import * as server from './server.js';
  */
 export async function main() {
 	try {
-		const [input = "input.html", data = "data.json", output = "output.html"] = args;
+		const [input = "input.html", data = "data.json", output = "output.html"] = env.args;
+		setEnv(env);
 		await server.processFiles(input, data, output);
 	} catch (err) {
 		console.error(`Failed to process files: ${err.message}`);

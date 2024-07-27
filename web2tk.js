@@ -1,5 +1,6 @@
 /**
  * Render the document with data, based on the 'd' attribute.
+ *
  * @param {Document} doc - The HTML document DOM to process.
  * @param {Object} data - The data to use for replacements.
  */
